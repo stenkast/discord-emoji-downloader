@@ -149,7 +149,7 @@ export default function App() {
                 <div className="flex gap-2">
                   <Button
                     label="Archive Emojis"
-                    disabled={downloadable ? true : false}
+                    disabled={downloadable ? true : fetching ? true : false}
                     fetching={false}
                     onClick={saveEmojis}
                   />
