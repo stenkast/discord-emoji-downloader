@@ -1,7 +1,6 @@
-import JSZip, { OutputType } from "jszip";
-import { API, emojiURL, cleanGuildName } from "./constants";
+import JSZip from "jszip";
+import { API, emojiURL } from "./constants";
 import { Emoji, Guild, Done } from "./types";
-import { saveAs } from "file-saver";
 
 export const getGuilds = async (token: string) => {
   let res = await API.request("GET", API.guilds, token);
