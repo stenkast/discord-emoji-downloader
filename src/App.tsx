@@ -150,7 +150,7 @@ export default function App() {
                   <Button
                     label="Archive Emojis"
                     disabled={downloadable ? true : false}
-                    fetching={fetching}
+                    fetching={false}
                     onClick={saveEmojis}
                   />
 
