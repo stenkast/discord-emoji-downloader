@@ -1,5 +1,7 @@
 # Discord Emoji Downloader
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/13f699a3-62a9-4528-a2e7-166fad42d080/deploy-status)](https://app.netlify.com/sites/discord-emoji-downloader/deploys)
+
 A simple tool to help you download all the emojis from a server you got access too..
 
 ## How it works
