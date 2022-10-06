@@ -14,6 +14,6 @@ A simple tool to help you download all the emojis from a server you got access t
 - Click the **science** request that shows up in the list
 - Go to the **Headers** tab
 - Find **Authorization** under **Request Headers** and copy your token (make sure you copy the entire token and don't copy any spaces)
-- Then just paste that token into the input field, and click "Count" and wait.
+- Then just paste that token into the input field, and click "Fetch Servers" to start the process.
 
 ![instructions image](/public/authorization.png?raw=true "Instructions Image")
