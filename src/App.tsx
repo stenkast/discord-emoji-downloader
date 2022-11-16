@@ -1,30 +1,22 @@
 import Div100vh from "react-div-100vh";
 import { useState } from "react";
 import { Emoji, Done, Guild } from "./utils/types";
-import { getGuildEmojis, getGuilds, downloadEmojis } from "./utils/functions";
+import { getGuildEmojis, getGuilds, prepareEmojis } from "./utils/functions";
 import { saveAs } from "file-saver";
 import { cleanGuildName } from "./utils/constants";
 import { FaceSmileIcon, FaceFrownIcon } from "@heroicons/react/24/outline";
-import {
-  Button,
-  EmojiList,
-  GuildList,
-  InfoHeader,
-  InfoModal,
-} from "./components";
+import { Button, EmojiList, GuildList, InfoHeader, InfoModal } from "./components";
+import { getTokenFromLocalStorage, saveTokenToLocalStorage } from "./utils/localStorage";
 
 export default function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState<boolean>(false);
-  const [token, setToken] = useState<string>("");
+  const [token, setToken] = useState<string>(getTokenFromLocalStorage);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [guildName, setGuildName] = useState<string>("");
   const [done, setDone] = useState<Done | null>(null);
-  const [emojisToDownload, setEmojisToDownload] = useState<Emoji[]>(
-    emojis ? emojis : []
-  );
-
+  const [emojisToDownload, setEmojisToDownload] = useState<Emoji[]>(emojis ? emojis : []);
   const [downloadable, setDownloadable] = useState<Blob | null>(null);
 
   const saveEmojis = async () => {
@@ -37,15 +29,16 @@ export default function App() {
       message: "Readying your Emojis...",
       type: "archiving",
     });
-    const value = await downloadEmojis(emojisToDownload, guildName);
 
-    if ("error" in value) {
-      setDone({ error: true, message: value.message, type: "failure" });
+    const preparedEmojis = await prepareEmojis(emojisToDownload, guildName);
+
+    if ("error" in preparedEmojis) {
+      setDone({ error: true, message: preparedEmojis.message, type: "failure" });
       setFetching(false);
       return;
     }
     setEmojisToDownload([]);
-    setDownloadable(value);
+    setDownloadable(preparedEmojis);
     setDone({ error: false, message: "Your Emojis are Ready!", type: "ready" });
     setFetching(false);
   };
@@ -68,6 +61,7 @@ export default function App() {
       setDone({ error, message, type: "failure" });
       return;
     }
+    saveTokenToLocalStorage(token);
     setGuildName(guild.name);
     setFetching(false);
     setEmojis(emojis);
@@ -97,6 +91,14 @@ export default function App() {
   const showEmojiList = emojis.length !== 0;
   const showGuildsList = guilds.length !== 0;
 
+  const downloadEmojis = () => {
+    if (!downloadable) return;
+    saveAs(downloadable, `Emojis_${cleanGuildName(guildName)}.zip`);
+    setEmojisToDownload([]);
+    setDownloadable(null);
+    setDone({ error: false, message: "Your Emojis have been downloaded!", type: "ready" });
+  };
+
   return (
     <Div100vh>
       <div className="h-full flex justify-center bg-gray text-white">
@@ -104,11 +106,7 @@ export default function App() {
           <InfoHeader />
           <div className="flex flex-col gap-1 max-w-xl mx-auto w-full">
             {showGuildsList ? (
-              <GuildList
-                guildName={guildName}
-                guilds={guilds}
-                fetchEmojis={fetchEmojis}
-              />
+              <GuildList guildName={guildName} guilds={guilds} fetchEmojis={fetchEmojis} />
             ) : (
               <>
                 <label className="font-semibold text-left">
@@ -158,13 +156,8 @@ export default function App() {
                     <Button
                       label="Download Emojis"
                       fetching={false}
-                      disabled={emojisToDownload.length !== 0 ? true : false}
-                      onClick={() =>
-                        saveAs(
-                          downloadable,
-                          `Emojis_${cleanGuildName(guildName)}.zip`
-                        )
-                      }
+                      disabled={false}
+                      onClick={downloadEmojis}
                     />
                   )}
                 </div>
@@ -209,10 +202,7 @@ export default function App() {
             )}
           </div>
         </div>
-        <InfoModal
-          isInfoModalOpen={isInfoModalOpen}
-          setIsInfoModalOpen={setIsInfoModalOpen}
-        />
+        <InfoModal isInfoModalOpen={isInfoModalOpen} setIsInfoModalOpen={setIsInfoModalOpen} />
       </div>
     </Div100vh>
   );
