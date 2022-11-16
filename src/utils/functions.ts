@@ -46,14 +46,14 @@ export const getGuildEmojis = async (guildId: string, token: string) => {
 
 type ReturnValue = Blob | Done;
 
-export const downloadEmojis = async (emojis: Emoji[], guildName: string): Promise<ReturnValue> => {
+export const prepareEmojis = async (emojis: Emoji[], guildName: string): Promise<ReturnValue> => {
   const uniqueNamedEmojis: Emoji[] = [];
   const hasSameName: { [key: string]: string | undefined } = {};
 
   emojis.forEach(async (emoji) => {
-    const name = emoji.name.toLowerCase();
-    const alreadyExistingCount = hasSameName[name] || 0;
-    hasSameName[name] = (Number(alreadyExistingCount) + 1).toString();
+    const name = emoji.name;
+    const alreadyExistingCount = hasSameName[name.toLowerCase()] || 0;
+    hasSameName[name.toLowerCase()] = (Number(alreadyExistingCount) + 1).toString();
     if (alreadyExistingCount > 0) {
       const newName = `${name}~${alreadyExistingCount}`;
       uniqueNamedEmojis.push({ ...emoji, name: newName });
@@ -63,7 +63,7 @@ export const downloadEmojis = async (emojis: Emoji[], guildName: string): Promis
   });
 
   const zip = new JSZip();
-  for (const emoji of emojis) {
+  for (const emoji of uniqueNamedEmojis) {
     const res = await fetch(emojiURL(emoji.id, emoji.animated)).then(async (res) => res.blob());
     zip.file(`${emoji.name}.${emoji.animated ? "gif" : "png"}`, res);
   }
@@ -81,8 +81,4 @@ export const downloadEmojis = async (emojis: Emoji[], guildName: string): Promis
   const zipFile = await zip.generateAsync({ type: "blob" });
 
   return zipFile;
-
-  // zip.generateAsync({ type: "blob" }).then(function (content) {
-  //   saveAs(content, `Emojis_${cleanGuildName(guildName)}.zip`);
-  // });
 };
