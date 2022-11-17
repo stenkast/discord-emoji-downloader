@@ -6,11 +6,11 @@ import { saveAs } from "file-saver";
 import { cleanGuildName } from "./utils/constants";
 import { FaceSmileIcon, FaceFrownIcon } from "@heroicons/react/24/outline";
 import { Button, EmojiList, GuildList, InfoHeader, InfoModal } from "./components";
-import { getTokenFromLocalStorage, saveTokenToLocalStorage } from "./utils/localStorage";
+import { getTokenFromSessionStorage, saveTokenToSessionStorage } from "./utils/sessionStorage";
 
 export default function App() {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState<boolean>(false);
-  const [token, setToken] = useState<string>(getTokenFromLocalStorage);
+  const [token, setToken] = useState<string>(getTokenFromSessionStorage);
   const [emojis, setEmojis] = useState<Emoji[]>([]);
   const [fetching, setFetching] = useState<boolean>(false);
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -61,7 +61,7 @@ export default function App() {
       setDone({ error, message, type: "failure" });
       return;
     }
-    saveTokenToLocalStorage(token);
+    saveTokenToSessionStorage(token);
     setGuildName(guild.name);
     setFetching(false);
     setEmojis(emojis);
