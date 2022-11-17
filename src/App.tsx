@@ -136,7 +136,7 @@ export default function App() {
               onClick={fetchServers}
             />
           )}
-          <div className="text-white mt-4 h-10 min-h-full text-xl">
+          <div className="text-white mt-4 h-10 text-xl">
             {showEmojiList && (
               <>
                 <EmojiList
