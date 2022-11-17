@@ -55,7 +55,7 @@ export const prepareEmojis = async (emojis: Emoji[], guildName: string): Promise
     const alreadyExistingCount = hasSameName[name.toLowerCase()] || 0;
     hasSameName[name.toLowerCase()] = (Number(alreadyExistingCount) + 1).toString();
     if (alreadyExistingCount > 0) {
-      const newName = `${name}~${alreadyExistingCount}`;
+      const newName = `${name}${alreadyExistingCount}`;
       uniqueNamedEmojis.push({ ...emoji, name: newName });
     } else {
       uniqueNamedEmojis.push(emoji);
