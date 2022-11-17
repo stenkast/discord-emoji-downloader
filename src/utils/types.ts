@@ -1,6 +1,7 @@
 export type Guild = {
   id: string;
   name: string;
+  icon: string;
 };
 
 export type Emoji = {

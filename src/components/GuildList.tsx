@@ -3,6 +3,7 @@ import { Combobox, Transition } from "@headlessui/react";
 import { Guild } from "../utils/types";
 import { useState } from "react";
 import { filterGuilds } from "../utils/functions";
+import { guildIcon } from "../utils/constants";
 
 type Props = {
   guilds: Guild[];
@@ -16,10 +17,7 @@ export const GuildList = ({ guilds, fetchEmojis, guildName }: Props) => {
   const filteredGuilds = filterGuilds(guilds, search);
 
   return (
-    <Combobox
-      value={guildName ? guildName : "Select Server"}
-      onChange={setSearch}
-    >
+    <Combobox value={guildName ? guildName : "Select Server"} onChange={setSearch}>
       <div className="relative w-full bg-blue rounded-lg text-sm font-medium flex px-2">
         <Combobox.Input
           onChange={(event) => setSearch(event.target.value)}
@@ -43,8 +41,9 @@ export const GuildList = ({ guilds, fetchEmojis, guildName }: Props) => {
               key={guild.id}
               value={guild.name}
               onClick={() => fetchEmojis(guild)}
-              className="flex cursor-pointer p-2 items-center whitespace-nowrap rounded text-light-gray hover:bg-dark-gray w-full text-sm font-medium"
+              className="flex gap-1 items-center cursor-pointer p-2 whitespace-nowrap rounded text-light-gray hover:bg-dark-gray w-full text-sm font-medium"
             >
+              <img src={guildIcon(guild.id, guild.icon)} alt="" width={26} height={26} />
               {guild.name}
             </Combobox.Option>
           ))}

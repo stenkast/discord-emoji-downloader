@@ -13,9 +13,10 @@ export const API = {
 };
 
 export const emojiURL = (emojiId: string, animated: boolean = false) =>
-  `https://cdn.discordapp.com/emojis/${emojiId}.${
-    animated ? "gif" : "png"
-  }?v=1`;
+  `https://cdn.discordapp.com/emojis/${emojiId}.${animated ? "gif" : "png"}?v=1`;
 
 export const cleanGuildName = (guildName: string) =>
   guildName.replace(/\s/g, "_").replace(/\W/g, "");
+
+export const guildIcon = (guildId: string, guildIcon: string) =>
+  guildIcon ? `https://cdn.discordapp.com/icons/${guildId}/${guildIcon}.png` : "/default.png";
